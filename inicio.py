@@ -26,6 +26,18 @@ bloco_img = pygame.transform.scale(bloco_img, (BLOCO_LARGURA, BLOCO_ALTURA))
 dog_img = pygame.image.load('img/dogremove.png').convert_alpha()
 dog_img = pygame.transform.scale(dog_img, (DOG_LARGURA, DOG_ALTURA))
 
+# Define a aceleração da gravidade
+GRAVITY = 2
+# Define a velocidade inicial no pulo
+JUMP_SIZE = 30
+# Define a altura do chão
+GROUND = ALTURA * 5 // 6
+
+# Define estados possíveis do jogador
+STILL = 0
+JUMPING = 1
+FALLING = 2
+
 # ----- Inicia estruturas de dados
 # Definindo os novos tipos
 class Ship(pygame.sprite.Sprite):
@@ -33,6 +45,9 @@ class Ship(pygame.sprite.Sprite):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
 
+# Define estado atual
+        # Usamos o estado para decidir se o jogador pode ou não pular
+        self.state = STILL
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.centerx = LARGURA / 2
@@ -40,9 +55,16 @@ class Ship(pygame.sprite.Sprite):
         self.speedx = 0
         self.speedy = 0
         #self.rect.y=ALTURA-DOG_ALTURA
+
+
     def update(self):
         # Atualização da posição da nave
         self.rect.x += self.speedx
+        # self.rect.y += self.speedy
+        self.speedy += GRAVITY
+        # Atualiza o estado para caindo
+        if self.speedy > 0:
+            self.state = FALLING
         self.rect.y += self.speedy
         # Mantem dentro da tela
         if self.rect.right > LARGURA: #DIREITA
@@ -52,6 +74,15 @@ class Ship(pygame.sprite.Sprite):
         if self.rect.bottom > ALTURA:
             self.rect.bottom = ALTURA
             self.speedy=0
+            # Atualiza o estado para parado
+            self.state = STILL
+            
+    # Método que faz o personagem pular (extraído de: https://github.com/Insper/pygame-snippets/blob/master/jump.py)
+    def jump(self):
+        # Só pode pular se ainda não estiver pulando ou caindo
+        if self.state == STILL:
+            self.speedy -= JUMP_SIZE
+            self.state = JUMPING 
 class Bloco(pygame.sprite.Sprite):
     def __init__(self, img):
         # Construtor da classe mãe (Sprite).
@@ -68,7 +99,7 @@ class Bloco(pygame.sprite.Sprite):
         # Atualizando a posição do Blocoo
         #self.rect.x += self.speedx
         self.rect.y += self.speedy
-        # Se o Blocoo passar do final da tela, volta para cima e sorteia
+        # Se o Bloco passar do final da tela, volta para cima e sorteia
         # novas posições e velocidades
         if self.rect.top > ALTURA or self.rect.right < 0 or self.rect.left > LARGURA:
             self.rect.x = random.randint(0, LARGURA-BLOCO_LARGURA)
@@ -106,8 +137,8 @@ while game:
                 player.speedx -= 8
             if event.key == pygame.K_RIGHT:
                 player.speedx += 8
-            if event.key == pygame.K_SPACE:
-                player.speedy += -8
+            # if event.key == pygame.K_SPACE:
+            #     player.speedy += -8
         # Verifica se soltou alguma tecla.
         if event.type == pygame.KEYUP:
             # Dependendo da tecla, altera a velocidade.
@@ -115,8 +146,13 @@ while game:
                 player.speedx += 8
             if event.key == pygame.K_RIGHT:
                 player.speedx -= 8
-            if event.key == pygame.K_SPACE:
-                player.speedy += 16
+            # if event.key == pygame.K_SPACE:
+            #     player.speedy += 16
+         # Verifica se soltou alguma tecla.
+        if event.type == pygame.KEYDOWN:
+            # Dependendo da tecla, altera o estado do jogador.
+            if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+                player.jump()
     todos_sprites.update()
     # ----- Atualiza estado do jogo
     # ----- Gera saídas
