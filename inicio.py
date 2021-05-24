@@ -1,3 +1,4 @@
+# Ricardo, Rodrigo e Ykaro
 # ===== Inicialização =====
 # ----- Importa e inicia pacotes
 import pygame
