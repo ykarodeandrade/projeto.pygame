@@ -3,6 +3,7 @@
 # ----- Importa e inicia pacotes
 import pygame
 import random
+from blocos import * # Importação dos blocos
 
 pygame.init()
 
@@ -41,7 +42,7 @@ FALLING = 2
 # ----- Inicia estruturas de dados
 # Definindo os novos tipos
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, img):
+    def __init__(self, img, blocos):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
 
@@ -54,6 +55,7 @@ class Ship(pygame.sprite.Sprite):
         self.rect.bottom = ALTURA
         self.speedx = 0
         self.speedy = 0
+        self.platforms = blocos
         #self.rect.y=ALTURA-DOG_ALTURA
 
 
@@ -84,16 +86,17 @@ class Ship(pygame.sprite.Sprite):
             self.speedy -= JUMP_SIZE
             self.state = JUMPING 
 class Bloco(pygame.sprite.Sprite):
-    def __init__(self, img):
+    def __init__(self, img, x, y):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
 
         self.image = img
         self.rect = self.image.get_rect()
-        self.rect.x = random.randint(0, LARGURA-BLOCO_LARGURA)
-        self.rect.y = random.randint(-100, -BLOCO_ALTURA)
+        self.rect.centerx = x     #random.randint(0, LARGURA-BLOCO_LARGURA)
+        self.rect.y = y           #random.randint(-100, -BLOCO_ALTURA)
         self.speedx = self.rect.x #random.randint(-3, 3)
-        self.speedy = 2
+        self.speedy = 1
+  
 
     def update(self):
         # Atualizando a posição do Blocoo
@@ -102,10 +105,10 @@ class Bloco(pygame.sprite.Sprite):
         # Se o Bloco passar do final da tela, volta para cima e sorteia
         # novas posições e velocidades
         if self.rect.top > ALTURA or self.rect.right < 0 or self.rect.left > LARGURA:
-            self.rect.x = random.randint(0, LARGURA-BLOCO_LARGURA)
-            self.rect.y = random.randint(-100, -BLOCO_ALTURA)
+            #self.rect.x = random.randint(0, LARGURA-BLOCO_LARGURA)
+            self.rect.y =  -2#random.randint(-100, -ALTURA)
             #self.speedx = random.randint(-3, 3)
-            self.speedy = 2 #random.randint(2, 9)
+            self.speedy = 1 #random.randint(2, 9)
 
 game = True
 background_x=0
@@ -115,13 +118,16 @@ clock = pygame.time.Clock()
 FPS = 50
 # Criando um grupo de meteoros
 todos_sprites = pygame.sprite.Group()
+lista_blocos=pygame.sprite.Group()
+
 # Criando o jogador
-player = Ship(dog_img)
+i=0
+while i<len(blocos(LARGURA,ALTURA)[0]):
+    bloco=Bloco(bloco_img,blocos(LARGURA,ALTURA)[0][i],blocos(LARGURA,ALTURA)[1][i])
+    lista_blocos.add(bloco)
+    i+=1
+player = Ship(dog_img,lista_blocos)
 todos_sprites.add(player)
-# Criando os meteoros
-for i in range(8):
-    bloco = Bloco(bloco_img)
-    todos_sprites.add(bloco)
 
 # ===== Loop principal =====
 while game:
@@ -154,11 +160,13 @@ while game:
             if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
                 player.jump()
     todos_sprites.update()
+    lista_blocos.update()
     # ----- Atualiza estado do jogo
     # ----- Gera saídas
     window.fill((0, 0, 0))  # Preenche com a cor branca
     window.blit(background, (background_x, background_y))
     todos_sprites.draw(window)
+    lista_blocos.draw(window)
     pygame.display.update()  # Mostra o novo frame para o jogador
 
 # ===== Finalização =====
