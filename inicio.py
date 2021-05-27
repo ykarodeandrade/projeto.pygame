@@ -16,15 +16,15 @@ pygame.display.set_caption('WATER JUMP')
 # ----- Inicia assets
 BLOCO_LARGURA = 85
 BLOCO_ALTURA = 38
-DOG_LARGURA = 80
-DOG_ALTURA = 80
+DOG_LARGURA = 180
+DOG_ALTURA = 180
 font = pygame.font.SysFont('Algerian', 48)
 text1 = font.render('TESTANDO', True, (255, 0, 0))
 background = pygame.image.load('img/ceu.png').convert_alpha()
 background= pygame.transform.scale(background, (LARGURA, ALTURA))
 bloco_img = pygame.image.load('img/blocks.png').convert_alpha()
 bloco_img = pygame.transform.scale(bloco_img, (BLOCO_LARGURA, BLOCO_ALTURA))
-dog_img = pygame.image.load('img/dogremove.png').convert_alpha()
+dog_img = pygame.image.load('img/personagem.png').convert_alpha()
 dog_img = pygame.transform.scale(dog_img, (DOG_LARGURA, DOG_ALTURA))
 
 # Define a aceleração da gravidade
@@ -35,9 +35,36 @@ JUMP_SIZE = 30
 GROUND = ALTURA * 5 // 6
 
 # Define estados possíveis do jogador
-STILL = 0
-JUMPING = 1
-FALLING = 2
+STILL = 0            #constante
+JUMPING = 1          #pulando
+FALLING = 2          #caindo
+WALKING_RIGTH = 3    #andando para direita
+WALKING_LEFT = 4     #andando para esquerda
+
+# Recebe uma imagem de sprite sheet e retorna uma lista de imagens. 
+# É necessário definir quantos sprites estão presentes em cada linha e coluna.
+# Essa função assume que os sprites no sprite sheet possuem todos o mesmo tamanho.
+def load_spritesheet(spritesheet, rows, columns):
+    # Calcula a largura e altura de cada sprite.
+    sprite_width = spritesheet.get_width() // columns
+    sprite_height = spritesheet.get_height() // rows
+    
+    # Percorre todos os sprites adicionando em uma lista.
+    sprites = []
+    for row in range(rows):
+        for column in range(columns):
+            # Calcula posição do sprite atual
+            x = column * sprite_width
+            y = row * sprite_height
+            # Define o retângulo que contém o sprite atual
+            dest_rect = pygame.Rect(x, y, sprite_width, sprite_height)
+
+            # Cria uma imagem vazia do tamanho do sprite
+            image = pygame.Surface((sprite_width, sprite_height), pygame.SRCALPHA)
+            # Copia o sprite atual (do spritesheet) na imagem
+            image.blit(spritesheet, (0, 0), dest_rect)
+            sprites.append(image)
+    return sprites
 
 # ----- Inicia estruturas de dados
 # Definindo os novos tipos
@@ -45,11 +72,26 @@ class Ship(pygame.sprite.Sprite):
     def __init__(self, img, blocos):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
+        # Define sequências de sprites de cada animação    
+        spritesheet = load_spritesheet(img, 4, 4)
+        self.animations = {
+            STILL: spritesheet[0:4],                #constante
+            WALKING_RIGTH: spritesheet[4:8],        #andando      
+            WALKING_LEFT:  spritesheet[8:12],
+            JUMPING: spritesheet[0:1],              #pulando
+            FALLING: spritesheet[0:1],
+        }
 
-# Define estado atual
+        # Define estado atual
         # Usamos o estado para decidir se o jogador pode ou não pular
+        self.animacao=STILL
         self.state = STILL
-        self.image = img
+        # Define animação atual
+        self.animation = self.animations[self.animacao]
+        # Inicializa o primeiro quadro da animação
+        self.frame = 0
+        self.image = self.animation[self.frame]
+        #self.image = img
         self.rect = self.image.get_rect()
         self.rect.centerx = LARGURA / 2
         self.rect.bottom = ALTURA - (100+BLOCO_ALTURA)
@@ -57,12 +99,43 @@ class Ship(pygame.sprite.Sprite):
         self.speedy = 0
         self.platforms = blocos
         self.highest_y = self.rect.bottom
+        # Guarda o tick da primeira imagem
+        self.last_update = pygame.time.get_ticks()
+        # Controle de ticks de animação: troca de imagem a cada self.frame_ticks milissegundos.
+        self.frame_ticks = 300
        
 
 
     def update(self):
-        # Atualização da posição da nave
-        self.rect.x += self.speedx
+        # Verifica o tick atual.
+        now = pygame.time.get_ticks()
+
+        # Verifica quantos ticks se passaram desde a ultima mudança de frame.
+        elapsed_ticks = now - self.last_update
+
+        # Se já está na hora de mudar de imagem...
+        if elapsed_ticks > self.frame_ticks:
+
+            # Marca o tick da nova imagem.
+            self.last_update = now
+
+            # Avança um quadro.
+            self.frame += 1
+
+            # Atualiza animação atual
+            self.animation = self.animations[self.animacao]
+            # Reinicia a animação caso o índice da imagem atual seja inválido
+            if self.frame >= len(self.animation):
+                self.frame = 0
+            
+            # Armazena a posição do centro da imagem
+            center = self.rect.center
+            # Atualiza imagem atual
+            self.image = self.animation[self.frame]
+            # Atualiza os detalhes de posicionamento
+            self.rect = self.image.get_rect()
+            self.rect.center = center
+
         # self.rect.y += self.speedy
         self.speedy += GRAVITY
         # Atualiza o estado para caindo
@@ -180,27 +253,30 @@ while game:
         if event.type == pygame.QUIT:
             game = False
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+                player.jump()
+                #score+=100
+                    
             # Dependendo da tecla, altera a velocidade.
             if event.key == pygame.K_LEFT:
+                player.animacao = WALKING_LEFT
                 player.speedx -= 8
             if event.key == pygame.K_RIGHT:
+                player.animacao = WALKING_RIGTH
                 player.speedx += 8
-            # if event.key == pygame.K_SPACE:
-            #     player.speedy += -8
-        # Verifica se soltou alguma tecla.
+            # Verifica se soltou alguma tecla.
         if event.type == pygame.KEYUP:
             # Dependendo da tecla, altera a velocidade.
             if event.key == pygame.K_LEFT:
                 player.speedx += 8
+                player.state = STILL
             if event.key == pygame.K_RIGHT:
-                player.speedx -= 8
-            # if event.key == pygame.K_SPACE:
-            #     player.speedy += 16
-         # Verifica se soltou alguma tecla.
-        if event.type == pygame.KEYDOWN:
-            # Dependendo da tecla, altera o estado do jogador.
-            if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
-                player.jump()
+                player.speedx -= 8 
+                player.state = STILL
+        # if event.type == pygame.KEYDOWN:
+        #     # Dependendo da tecla, altera o estado do jogador.
+        #     if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+        #         player.jump()
 
     background_x+=background_speedx
     background_y+=background_speedy
