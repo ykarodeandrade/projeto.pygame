@@ -4,6 +4,7 @@
 import pygame
 import random
 from blocos import * # Importação dos blocos
+import time 
 
 pygame.init()
 
@@ -26,6 +27,13 @@ bloco_img = pygame.image.load('img/blocks.png').convert_alpha()
 bloco_img = pygame.transform.scale(bloco_img, (BLOCO_LARGURA, BLOCO_ALTURA))
 dog_img = pygame.image.load('img/personagem.png').convert_alpha()
 dog_img = pygame.transform.scale(dog_img, (DOG_LARGURA, DOG_ALTURA))
+
+# Carrega os sons do jogo
+pygame.mixer.music.load('snd/geral.ogg')
+pygame.mixer.music.set_volume(0.4)
+#boom_sound = pygame.mixer.Sound('assets/snd/expl3.wav')
+som_pulo = pygame.mixer.Sound('snd/pulo.wav')
+som_gameover = pygame.mixer.Sound('snd/GameOver.wav')
 
 # Define a aceleração da gravidade
 GRAVITY = 2
@@ -69,7 +77,7 @@ def load_spritesheet(spritesheet, rows, columns):
 # ----- Inicia estruturas de dados
 # Definindo os novos tipos
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, img, blocos):
+    def __init__(self, img, blocos,som_pulo):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
         # Define sequências de sprites de cada animação    
@@ -99,6 +107,7 @@ class Ship(pygame.sprite.Sprite):
         self.speedy = 0
         self.platforms = blocos
         self.highest_y = self.rect.bottom
+        self.som_pulo = som_pulo
         # Guarda o tick da primeira imagem
         self.last_update = pygame.time.get_ticks()
         # Controle de ticks de animação: troca de imagem a cada self.frame_ticks milissegundos.
@@ -193,6 +202,8 @@ class Ship(pygame.sprite.Sprite):
         if self.state == STILL:
             self.speedy -= JUMP_SIZE
             self.state = JUMPING 
+        self.som_pulo.play()
+
 class Bloco(pygame.sprite.Sprite):
     def __init__(self, img, x, y):
         # Construtor da classe mãe (Sprite).
@@ -241,10 +252,11 @@ while i<len(blocos(LARGURA,ALTURA)[0]):
     bloco=Bloco(bloco_img,blocos(LARGURA,ALTURA)[0][i],blocos(LARGURA,ALTURA)[1][i])
     lista_blocos.add(bloco)
     i+=1
-player = Ship(dog_img,lista_blocos)
+player = Ship(dog_img,lista_blocos, som_pulo)
 todos_sprites.add(player)
 
 # ===== Loop principal =====
+pygame.mixer.music.play(loops=-1)
 while game:
     clock.tick(FPS)
     # ----- Trata eventos
@@ -285,7 +297,10 @@ while game:
         background_x = 0
         background_y = 0
         background_y2=-600
-
+    if player.rect.bottom>ALTURA:
+        som_gameover.play()
+        time.sleep(1)
+        game=False
     todos_sprites.update()
     lista_blocos.update()
     # ----- Atualiza estado do jogo
