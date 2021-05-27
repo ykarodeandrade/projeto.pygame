@@ -27,6 +27,7 @@ bloco_img = pygame.image.load('img/blocks.png').convert_alpha()
 bloco_img = pygame.transform.scale(bloco_img, (BLOCO_LARGURA, BLOCO_ALTURA))
 dog_img = pygame.image.load('img/personagem.png').convert_alpha()
 dog_img = pygame.transform.scale(dog_img, (DOG_LARGURA, DOG_ALTURA))
+score_font=pygame.font.Font('font/score.ttf',28)
 
 # Carrega os sons do jogo
 pygame.mixer.music.load('snd/geral.ogg')
@@ -112,6 +113,8 @@ class Ship(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         # Controle de ticks de animação: troca de imagem a cada self.frame_ticks milissegundos.
         self.frame_ticks = 300
+        self.score=0
+        self.ultimo=0
        
 
 
@@ -172,6 +175,12 @@ class Ship(pygame.sprite.Sprite):
                 # Verifica se a altura alcançada durante o pulo está acima da
                 # plataforma.
                 if self.highest_y <= platform.rect.top:
+                    bloco_atual=platform.id
+                    if bloco_atual!=self.ultimo:
+                        self.score+=100
+                        print('fez pontos')
+                        print(self.ultimo,bloco_atual)
+                        self.ultimo=bloco_atual
                     self.rect.bottom = platform.rect.top
                     # Atualiza a altura no mapa
                     self.highest_y = self.rect.bottom
@@ -205,7 +214,7 @@ class Ship(pygame.sprite.Sprite):
         self.som_pulo.play()
 
 class Bloco(pygame.sprite.Sprite):
-    def __init__(self, img, x, y):
+    def __init__(self, img, x, y, id):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
 
@@ -215,6 +224,7 @@ class Bloco(pygame.sprite.Sprite):
         self.rect.y = y           #random.randint(-100, -BLOCO_ALTURA)
         self.speedx = self.rect.x #random.randint(-3, 3)
         self.speedy = 1
+        self.id=id
   
 
     def update(self):
@@ -229,91 +239,99 @@ class Bloco(pygame.sprite.Sprite):
             #self.speedx = random.randint(-3, 3)
             self.speedy = 1 #random.randint(2, 9)
 
-game = True
+def game_screen(window):    
+    game = True
 
-# Variável para o ajuste de velocidade
-clock = pygame.time.Clock()
-FPS = 50
-# Criando um grupo de meteoros
-todos_sprites = pygame.sprite.Group()
-lista_blocos=pygame.sprite.Group()
+    # Variável para o ajuste de velocidade
+    clock = pygame.time.Clock()
+    FPS = 50
+    # Criando um grupo de meteoros
+    todos_sprites = pygame.sprite.Group()
+    lista_blocos=pygame.sprite.Group()
 
-# Posição das imagens
-background_x=0
-background_y=0
-background_y2=-600
-background_speedx=0
-background_speedy=1
+    # Posição das imagens
+    background_x=0
+    background_y=0
+    background_y2=-600
+    background_speedx=0
+    background_speedy=1
 
-# Criando o jogador
+    # Criando o jogador
 
-i=0
-while i<len(blocos(LARGURA,ALTURA)[0]):
-    bloco=Bloco(bloco_img,blocos(LARGURA,ALTURA)[0][i],blocos(LARGURA,ALTURA)[1][i])
-    lista_blocos.add(bloco)
-    i+=1
-player = Ship(dog_img,lista_blocos, som_pulo)
-todos_sprites.add(player)
+    i=0
+    while i<len(blocos(LARGURA,ALTURA)[0]):
+        bloco=Bloco(bloco_img,blocos(LARGURA,ALTURA)[0][i],blocos(LARGURA,ALTURA)[1][i], i+1)
+        lista_blocos.add(bloco)
+        i+=1
+    player = Ship(dog_img,lista_blocos, som_pulo)
+    todos_sprites.add(player)
 
-# ===== Loop principal =====
-pygame.mixer.music.play(loops=-1)
-while game:
-    clock.tick(FPS)
-    # ----- Trata eventos
-    for event in pygame.event.get():
-        # ----- Verifica consequências
-        if event.type == pygame.QUIT:
-            game = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
-                player.jump()
-                #score+=100
-                    
-            # Dependendo da tecla, altera a velocidade.
-            if event.key == pygame.K_LEFT:
-                player.animacao = WALKING_LEFT
-                player.speedx -= 8
-            if event.key == pygame.K_RIGHT:
-                player.animacao = WALKING_RIGTH
-                player.speedx += 8
-            # Verifica se soltou alguma tecla.
-        if event.type == pygame.KEYUP:
-            # Dependendo da tecla, altera a velocidade.
-            if event.key == pygame.K_LEFT:
-                player.speedx += 8
-                player.state = STILL
-            if event.key == pygame.K_RIGHT:
-                player.speedx -= 8 
-                player.state = STILL
-        # if event.type == pygame.KEYDOWN:
-        #     # Dependendo da tecla, altera o estado do jogador.
-        #     if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
-        #         player.jump()
+    # ===== Loop principal =====
+    pygame.mixer.music.play(loops=-1)
+    while game:
+        clock.tick(FPS)
+        # ----- Trata eventos
+        for event in pygame.event.get():
+            # ----- Verifica consequências
+            if event.type == pygame.QUIT:
+                game = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+                    player.jump()
+                    #score+=100
+                        
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_LEFT:
+                    player.animacao = WALKING_LEFT
+                    player.speedx -= 8
+                if event.key == pygame.K_RIGHT:
+                    player.animacao = WALKING_RIGTH
+                    player.speedx += 8
+                # Verifica se soltou alguma tecla.
+            if event.type == pygame.KEYUP:
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_LEFT:
+                    player.speedx += 8
+                    player.state = STILL
+                if event.key == pygame.K_RIGHT:
+                    player.speedx -= 8 
+                    player.state = STILL
+            # if event.type == pygame.KEYDOWN:
+            #     # Dependendo da tecla, altera o estado do jogador.
+            #     if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+            #         player.jump()
 
-    background_x+=background_speedx
-    background_y+=background_speedy
-    background_y2+=background_speedy
-    if background_y > ALTURA or background_x + BLOCO_LARGURA < 0 or background_x > LARGURA:
-        background_x = 0
-        background_y = 0
-        background_y2=-600
-    if player.rect.bottom>ALTURA:
-        som_gameover.play()
-        time.sleep(1)
-        game=False
-    todos_sprites.update()
-    lista_blocos.update()
-    # ----- Atualiza estado do jogo
-    # ----- Gera saídas
-       
+        background_x+=background_speedx
+        background_y+=background_speedy
+        background_y2+=background_speedy
+        if background_y > ALTURA or background_x + BLOCO_LARGURA < 0 or background_x > LARGURA:
+            background_x = 0
+            background_y = 0
+            background_y2=-600
+        if player.rect.bottom>ALTURA:
+            som_gameover.play()
+            time.sleep(1)
+            game=False
+        todos_sprites.update()
+        lista_blocos.update()
 
-    window.fill((0, 0, 0))  # Preenche com a cor branca
-    window.blit(background, (background_x, background_y))
-    window.blit(background, (background_x, background_y))
-    window.blit(background, (background_x, background_y2))
-    todos_sprites.draw(window)
-    lista_blocos.draw(window)
-    pygame.display.update()  # Mostra o novo frame para o jogador
+        # ----- Atualiza estado do jogo
+        # ----- Gera saídas
+
+        window.fill((0, 0, 0))  # Preenche com a cor branca
+        window.blit(background, (background_x, background_y))
+        window.blit(background, (background_x, background_y))
+        window.blit(background, (background_x, background_y2))
+        text_surface = score_font.render("{:08d}".format(player.score), True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (LARGURA-150,  10)
+        window.blit(text_surface, text_rect)
+        todos_sprites.draw(window)
+        lista_blocos.draw(window)
+        #window.blit(agua, (agua_x, agua_y))
+        pygame.display.update()  # Mostra o novo frame para o jogador
+
+game_screen(window)
 
 # ===== Finalização =====
 pygame.quit()  # Função do PyGame que finaliza os recursos utilizados
