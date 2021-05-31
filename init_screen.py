@@ -1,7 +1,7 @@
 import pygame
 import random
 from os import path
-from constantes import ALTURA, IMG_DIR, BLACK, FPS, JUMPING, FALLING, LARGURA
+from constantes import ALTURA, IMG_DIR, GREEN, FPS, JUMPING, FALLING, LARGURA
 
 
 def init_screen(screen):
@@ -38,7 +38,7 @@ def init_screen(screen):
                 running = False
 
         # A cada loop, redesenha o fundo e os sprites
-        screen.fill(BLACK)
+        screen.fill(GREEN)
         screen.blit(background, background_rect)
         screen.blit(arvore, (10, ALTURA-305))
         screen.blit(poco_inicio, (320, ALTURA-100))

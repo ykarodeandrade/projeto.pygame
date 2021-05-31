@@ -4,8 +4,9 @@ from constantes import IMG_DIR,FNT_DIR,SND_DIR,LARGURA,ALTURA,BLOCO_ALTURA,BLOCO
 
 pygame.init()
 #pygame.mixer.init()
-font = pygame.font.SysFont('Algerian', 48)
+font = pygame.font.Font(os.path.join(FNT_DIR,'score.ttf'),48)#('Algerian', 48)
 texto_inicial = font.render('ESCAPING THE WELL', True, (255, 0, 0))
+texto_final = font.render('GAME OVER', True, (255, 0, 0))
 background = pygame.image.load(os.path.join(IMG_DIR,'poço.png'))
 background= pygame.transform.scale(background, (LARGURA, ALTURA))
 #background = pygame.display.set_mode((LARGURA, ALTURA))

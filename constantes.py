@@ -28,4 +28,5 @@ WALKING_RIGTH = 3    #andando para direita
 WALKING_LEFT = 4     #andando para esquerda
 # Define algumas variáveis com as cores básicas
 WHITE = (255, 255, 255)
-BLACK = (0, 128, 0)
+GREEN = (0, 128, 0)
+BLACK = (0, 0, 0)

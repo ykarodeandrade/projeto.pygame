@@ -1,8 +1,9 @@
 import pygame
-from constantes import FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA
-from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua
+from constantes import FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA,BLACK
+from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua, texto_final
 from sprites import Ship, Bloco
 import time
+
 
 pygame.init()
 pygame.mixer.init()
@@ -89,6 +90,11 @@ def game_screen(window):
         if player.rect.bottom>ALTURA:
             som_gameover.play()
             time.sleep(1)
+            window.fill(BLACK)
+            window.blit(background, (LARGURA, ALTURA))
+            window.blit(texto_final,(LARGURA-465,ALTURA-350))
+            pygame.display.flip()
+            pygame.time.delay(3000)
             game=False
         todos_sprites.update()
         lista_blocos.update()
