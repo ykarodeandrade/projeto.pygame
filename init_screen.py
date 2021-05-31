@@ -1,7 +1,7 @@
 import pygame
 import random
 from os import path
-from constantes import ALTURA, IMG_DIR, GREEN, FPS, JUMPING, FALLING, LARGURA
+from constantes import *
 
 
 def init_screen(screen):
@@ -11,7 +11,8 @@ def init_screen(screen):
     background = pygame.image.load(path.join(IMG_DIR, 'ceu.png')).convert()
     background=pygame.transform.scale(background, (LARGURA, ALTURA-130))
     arvore=pygame.image.load(path.join(IMG_DIR, 'tree.png')).convert()
-    font = pygame.font.SysFont('Algerian', 48)
+    font = pygame.font.Font(path.join(FNT_DIR,'score.ttf'),28)#('Algerian', 48)
+    font2 = pygame.font.Font(path.join(FNT_DIR,'score.ttf'),18)
     texto_inicial = font.render('ESCAPING THE WELL', True, (0, 0, 0))
     background_rect = background.get_rect()
     arvore_rect= arvore.get_rect()
@@ -19,6 +20,12 @@ def init_screen(screen):
     poco_inicio=pygame.transform.scale(poco_inicio, (100, 80))
     personagem=pygame.image.load(path.join(IMG_DIR, 'personagem_só.png')).convert()
     personagem=pygame.transform.scale(personagem, (80, 80))
+    direita=pygame.image.load(path.join(IMG_DIR, 'right.png')).convert()
+    texto_direita = font2.render('right', True, (0, 0, 0))
+    esquerda=pygame.image.load(path.join(IMG_DIR, 'left.png')).convert()
+    texto_esquerda = font2.render('left', True, (0, 0, 0))
+    espaço=pygame.image.load(path.join(IMG_DIR, 'jump.png')).convert()
+    texto_espaço = font2.render('jump', True, (0, 0, 0))
     
     running = True
     while running:
@@ -44,6 +51,12 @@ def init_screen(screen):
         screen.blit(poco_inicio, (320, ALTURA-100))
         screen.blit(texto_inicial,(20,20))
         screen.blit(personagem, (200, ALTURA-110))
+        screen.blit(direita, (150, ALTURA-500))
+        screen.blit(texto_direita,(300,ALTURA-500))
+        screen.blit(esquerda, (150, ALTURA-450))
+        screen.blit(texto_esquerda,(300,ALTURA-450))
+        screen.blit(espaço, (50, ALTURA-400))
+        screen.blit(texto_espaço,(300,ALTURA-400))
 
 
         # Depois de desenhar tudo, inverte o display.
