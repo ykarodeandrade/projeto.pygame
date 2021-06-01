@@ -1,9 +1,14 @@
+# import pygame
+# from constantes import FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA,BLACK
+# from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua, texto_final
+# from sprites import Ship, Bloco
+# import time
+
 import pygame
-from constantes import FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA,BLACK
-from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua, texto_final
+from constantes import BLACK, FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA
+from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua,texto_final
 from sprites import Ship, Bloco
 import time
-
 
 pygame.init()
 pygame.mixer.init()

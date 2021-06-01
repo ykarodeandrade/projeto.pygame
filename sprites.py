@@ -1,7 +1,13 @@
+# import pygame
+# import random
+# from constantes import LARGURA, ALTURA, BLOCO_LARGURA, BLOCO_ALTURA, DOG_LARGURA, DOG_ALTURA,GRAVITY,STILL,WALKING_RIGTH,WALKING_LEFT,JUMPING,JUMP_SIZE,FALLING
+# from assets import load_spritesheet
+
 import pygame
 import random
 from constantes import LARGURA, ALTURA, BLOCO_LARGURA, BLOCO_ALTURA, DOG_LARGURA, DOG_ALTURA,GRAVITY,STILL,WALKING_RIGTH,WALKING_LEFT,JUMPING,JUMP_SIZE,FALLING
-from assets import load_spritesheet
+from assets import *
+
 pygame.init()
 pygame.mixer.init()
 # ----- Inicia estruturas de dados
@@ -154,23 +160,26 @@ class Bloco(pygame.sprite.Sprite):
     def __init__(self, img, x, y,id):
         # Construtor da classe mãe (Sprite).
         pygame.sprite.Sprite.__init__(self)
-
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.centerx = x     #random.randint(0, LARGURA-BLOCO_LARGURA)
-        self.rect.y = y           #random.randint(-100, -BLOCO_ALTURA)
+        self.rect.y = y 
+        #self.rect.x = x          #random.randint(-100, -BLOCO_ALTURA)
         self.speedx = self.rect.x #random.randint(-3, 3)
         self.speedy = 1
-        self.id=id
-
+        self.id = id
+        self.inicio = x
     def update(self):
-        # Atualizando a posição do Blocoo
-        #self.rect.x += self.speedx
+        # Atualizando a posição do Bloco
+        if self.id==4:
+            self.rect.x+=self.speedx
+            if self.rect.x>self.inicio+40:#BLOCO_LARGURA:
+                #self.rect.centerx-=1
+                self.speedx=-1
+            if self.rect.x<self.inicio-40:#BLOCO_LARGURA:
+                self.speedx=1  
         self.rect.y += self.speedy
         # Se o Blocoo passar do final da tela, volta para cima e sorteia
         # novas posições e velocidades
-        if self.rect.bottom > ALTURA or self.rect.right < 0 or self.rect.left > LARGURA:
-            #self.rect.x = random.randint(0, LARGURA-BLOCO_LARGURA)
+        if self.rect.bottom > ALTURA: #or self.rect.right < 0 or self.rect.left > LARGURA:
             self.rect.y =  -2#random.randint(-100, -ALTURA)
-            #self.speedx = random.randint(-3, 3)
-            self.speedy = 1 #random.randint(2, 9)

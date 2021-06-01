@@ -1,8 +1,13 @@
+# import pygame
+# import random
+# from os import path
+# from constantes import *
+
 import pygame
 import random
 from os import path
-from constantes import *
-
+from constantes import ALTURA, GREEN, IMG_DIR, BLACK, FPS, JUMPING, FALLING, LARGURA, FNT_DIR
+from assets import texto_inicial
 
 def init_screen(screen):
     # Variável para o ajuste de velocidade
