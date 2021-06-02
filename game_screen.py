@@ -51,6 +51,8 @@ def game_screen(window):
     # ===== Loop principal =====
     pygame.mixer.music.play(loops=-1)
     #score = 0
+    aumenta_vel=True
+    
     while game:
         clock.tick(FPS)
         # ----- Trata eventos
@@ -60,6 +62,7 @@ def game_screen(window):
                 game = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+                    player.state=STILL
                     player.jump()
                     #score+=100
                         
@@ -83,6 +86,20 @@ def game_screen(window):
             #     # Dependendo da tecla, altera o estado do jogador.
             #     if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
             #         player.jump()
+
+            if player.score%500==0 and aumenta_vel==True and player.state==STILL:
+                for i in lista_blocos:
+                    i.speedy+=0.1
+                background_speedy+=0.1
+                # player.speedy+=0.1
+                aumenta_vel=False
+                player.state=STILL
+            else:
+                aumenta_vel=True
+                player.state=STILL
+            player.state=STILL
+
+
                 
         background_x+=background_speedx
         background_y+=background_speedy
