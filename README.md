@@ -2,9 +2,9 @@
 
 Idealizadores do jogo:
 
--Ricardo Mourão Rodrigues Filho
--Rodrigo de Lima Azeredo
--Ykaro de Sousa Andrade
+- Ricardo Mourão Rodrigues Filho;
+- Rodrigo de Lima Azeredo;
+- Ykaro de Sousa Andrade.
 
 ## Introdução
 
@@ -14,7 +14,7 @@ Imagine que você caia dentro de um poço e tem que fazer ao máximo para sobrev
 
 ## Tela de inicio
 
-<img src="readme/tela_inicio.png" height="100" width="100" >
+<img src="readme/tela_inicio.png" height="350" width="270" >
 
 Assim que for iniciado o jogo no seu editor de texto, você irá se deparar com essa imagem. Ela possui informações de como deve ser realizada a jogabilidade do jogo. Portanto, quando você clicar no botão `ESPAÇO` o personagem irá pular. Quando você clicar no botão direito `->` ou botão esquerdo `<-` o personagem irá para a direita ou para a esquerda, respectivamente. Se clicar em qualquer tecla do seu teclado, o jogo irá começar. Contudo, recomendamos a tecla `ENTER`.
 
