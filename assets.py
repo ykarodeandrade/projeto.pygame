@@ -3,13 +3,13 @@ import os
 from constantes import IMG_DIR,FNT_DIR,SND_DIR,LARGURA,ALTURA,BLOCO_ALTURA,BLOCO_LARGURA,DOG_ALTURA,DOG_LARGURA
 
 pygame.init()
-#pygame.mixer.init()
-font = pygame.font.Font(os.path.join(FNT_DIR,'score.ttf'),48)#('Algerian', 48)
+
+font = pygame.font.Font(os.path.join(FNT_DIR,'score.ttf'),48)
 texto_inicial = font.render('ESCAPING THE WELL', True, (255, 0, 0))
 texto_final = font.render('GAME OVER', True, (255, 0, 0))
 background = pygame.image.load(os.path.join(IMG_DIR,'poço.png'))
 background= pygame.transform.scale(background, (LARGURA, ALTURA))
-#background = pygame.display.set_mode((LARGURA, ALTURA))
+
 agua=pygame.image.load(os.path.join(IMG_DIR,'water.png'))
 agua=pygame.transform.scale(agua, (LARGURA, ALTURA-500))
 bloco_img = pygame.image.load(os.path.join(IMG_DIR,'blocks.png'))
@@ -18,15 +18,16 @@ dog_img = pygame.image.load(os.path.join(IMG_DIR,'personagem.png'))
 dog_img = pygame.transform.scale(dog_img, (DOG_LARGURA, DOG_ALTURA))
 score_font=pygame.font.Font(os.path.join(FNT_DIR,'score.ttf'),28)
 # Carrega os sons do jogo
+
 pygame.mixer.music.load(os.path.join(SND_DIR,'geral.ogg'))
 pygame.mixer.music.set_volume(0.4)
-#boom_sound = pygame.mixer.Sound('assets/snd/expl3.wav')
 som_pulo = pygame.mixer.Sound(os.path.join(SND_DIR,'pulo.wav'))
 som_gameover = pygame.mixer.Sound(os.path.join(SND_DIR,'GameOver.wav'))
 
 # Recebe uma imagem de sprite sheet e retorna uma lista de imagens. 
 # É necessário definir quantos sprites estão presentes em cada linha e coluna.
 # Essa função assume que os sprites no sprite sheet possuem todos o mesmo tamanho.
+
 def load_spritesheet(spritesheet, rows, columns):
     # Calcula a largura e altura de cada sprite.
     sprite_width = spritesheet.get_width() // columns
