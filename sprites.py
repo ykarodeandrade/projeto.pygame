@@ -1,8 +1,3 @@
-# import pygame
-# import random
-# from constantes import LARGURA, ALTURA, BLOCO_LARGURA, BLOCO_ALTURA, DOG_LARGURA, DOG_ALTURA,GRAVITY,STILL,WALKING_RIGTH,WALKING_LEFT,JUMPING,JUMP_SIZE,FALLING
-# from assets import load_spritesheet
-
 import pygame
 import random
 from constantes import LARGURA, ALTURA, BLOCO_LARGURA, BLOCO_ALTURA, DOG_LARGURA, DOG_ALTURA,GRAVITY,STILL,WALKING_RIGTH,WALKING_LEFT,JUMPING,JUMP_SIZE,FALLING
@@ -81,8 +76,6 @@ class Ship(pygame.sprite.Sprite):
             # Atualiza os detalhes de posicionamento
             self.rect = self.image.get_rect()
             self.rect.center = center
-        # if self.rect.bottom>ALTURA:
-        #     som_gameover.play()
         # Vamos tratar os movimentos de maneira independente.
         # Primeiro tentamos andar no eixo y e depois no x.
         # Tenta andar em y
@@ -93,8 +86,6 @@ class Ship(pygame.sprite.Sprite):
             self.state = FALLING
         # Atualiza a posição y
         self.rect.y += self.speedy
-        # for bloco in self.platforms:
-        #     bloco.rect.y += self.speedy
 
         # Atualiza altura no mapa
         if self.state != FALLING:
@@ -119,8 +110,6 @@ class Ship(pygame.sprite.Sprite):
                     bloco_atual=platform.id
                     if bloco_atual!=self.ultimo:
                         self.score+=100
-                        print('fez pontos')
-                        print(self.ultimo,bloco_atual)
                         self.ultimo=bloco_atual
                     self.rect.bottom = platform.rect.top
                     # Atualiza a altura no mapa
@@ -140,11 +129,6 @@ class Ship(pygame.sprite.Sprite):
             self.rect.left = 0
         if self.rect.right >= LARGURA:
             self.rect.right = LARGURA 
-        # if self.rect.bottom > ALTURA:
-        #     self.rect.bottom = ALTURA
-        #     self.speedy=0
-        #     # Atualiza o estado para parado
-        #     self.state = STILL
         # Se colidiu com algum bloco, volta para o ponto antes da colisão
         # O personagem não colide com as plataformas quando está andando na horizontal
         
@@ -162,10 +146,9 @@ class Bloco(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = img
         self.rect = self.image.get_rect()
-        self.rect.centerx = x     #random.randint(0, LARGURA-BLOCO_LARGURA)
+        self.rect.centerx = x
         self.rect.y = y 
-        #self.rect.x = x          #random.randint(-100, -BLOCO_ALTURA)
-        self.speedx = self.rect.x #random.randint(-3, 3)
+        self.speedx = self.rect.x
         self.speedy = 1
         self.id = id
         self.inicio = x
@@ -174,12 +157,11 @@ class Bloco(pygame.sprite.Sprite):
         if self.id==4:
             self.rect.x+=self.speedx
             if self.rect.x>self.inicio+40:#BLOCO_LARGURA:
-                #self.rect.centerx-=1
                 self.speedx=-1
             if self.rect.x<self.inicio-40:#BLOCO_LARGURA:
                 self.speedx=1  
         self.rect.y += self.speedy
         # Se o Blocoo passar do final da tela, volta para cima e sorteia
         # novas posições e velocidades
-        if self.rect.bottom > ALTURA: #or self.rect.right < 0 or self.rect.left > LARGURA:
-            self.rect.y =  -2#random.randint(-100, -ALTURA)
+        if self.rect.bottom > ALTURA:
+            self.rect.y =  -2
