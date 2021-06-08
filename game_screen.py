@@ -1,9 +1,3 @@
-# import pygame
-# from constantes import FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA,BLACK
-# from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua, texto_final
-# from sprites import Ship, Bloco
-# import time
-
 import pygame
 from constantes import BLACK, FPS, LARGURA, ALTURA, WALKING_LEFT,WALKING_RIGTH,STILL,BLOCO_LARGURA,BLOCO_ALTURA
 from assets import blocos, bloco_img, dog_img, som_pulo, background,som_gameover,score_font,texto_inicial,agua,texto_final
@@ -30,17 +24,6 @@ def game_screen(window):
     lista_blocos=pygame.sprite.Group()
     # Criando o jogador
 
-    # Criando os meteoros
-    # for i in range(8):
-    #     bloco = Bloco(bloco_img)
-    #     todos_sprites.add(bloco)
-    # bloco1 = Bloco(bloco_img,LARGURA/2,ALTURA-100)
-    # bloco2 = Bloco(bloco_img,LARGURA-30,ALTURA-200)
-    # bloco3 = Bloco(bloco_img,LARGURA-10,ALTURA-400)
-    # lista_blocos.add(bloco1)
-    # lista_blocos.add(bloco2)
-    # lista_blocos.add(bloco3)
-
     i=0
     while i<len(blocos(LARGURA,ALTURA)[0]):
         bloco=Bloco(bloco_img,blocos(LARGURA,ALTURA)[0][i],blocos(LARGURA,ALTURA)[1][i],i+1)
@@ -50,7 +33,6 @@ def game_screen(window):
     todos_sprites.add(player)
     # ===== Loop principal =====
     pygame.mixer.music.play(loops=-1)
-    #score = 0
     aumenta_vel=True
     
     while game:
@@ -61,11 +43,10 @@ def game_screen(window):
             if event.type == pygame.QUIT:
                 game = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
+                if event.key == pygame.K_SPACE: 
                     player.state=STILL
                     player.jump()
-                    #score+=100
-                        
+                            
                 # Dependendo da tecla, altera a velocidade.
                 if event.key == pygame.K_LEFT:
                     player.animacao = WALKING_LEFT
@@ -82,16 +63,11 @@ def game_screen(window):
                 if event.key == pygame.K_RIGHT:
                     player.speedx -= 8 
                     player.state = STILL
-            # if event.type == pygame.KEYDOWN:
-            #     # Dependendo da tecla, altera o estado do jogador.
-            #     if event.key == pygame.K_SPACE: #or event.key == pygame.K_UP:
-            #         player.jump()
-
+       
             if player.score%500==0 and aumenta_vel==True and player.state==STILL:
                 for i in lista_blocos:
                     i.speedy+=0.1
                 background_speedy+=0.1
-                # player.speedy+=0.1
                 aumenta_vel=False
                 player.state=STILL
             else:
@@ -104,7 +80,6 @@ def game_screen(window):
         background_x+=background_speedx
         background_y+=background_speedy
         background_y2+=background_speedy
-        #agua_y+=agua_speedy
         if background_y > ALTURA or background_x + BLOCO_LARGURA < 0 or background_x > LARGURA:
             background_x = 0
             background_y = 0
@@ -131,9 +106,8 @@ def game_screen(window):
         text_rect = text_surface.get_rect()
         text_rect.midtop = (LARGURA-150,  10)
         window.blit(text_surface, text_rect)
-        #window.blit(agua, (agua_x,agua_y))
         todos_sprites.draw(window)
         lista_blocos.draw(window)
         window.blit(agua, (agua_x,agua_y))
-        #window.blit(agua, (agua_x, agua_y))
+
         pygame.display.update()  # Mostra o novo frame para o jogador
