@@ -63,6 +63,10 @@ Por esse jogo existir uma limitação de entrega, não foi possível implementar
 
 - Ykaro de Sousa Andrade: coração da equipe, sempre buscando se reunir para evoluir ainda mais a jogabilidade do jogo. Suas principais atuações estão na implementação de pontuações (consulte [sprites.py](sprites.py)), fazer o bloco se movimentar no eixo horizontal (consulte [game_screen.py](game_screen.py)) etc. Seus commits apresentam nomes diferentes pois houve uma alteração no nome do seu usário do Git Hub, nada que comprometa o desenvolvimento do projeto.
 
+## Link para vídeo do Jogo em ação
+
+https://www.youtube.com/watch?v=61rxlDgypis
+
 ## Referências
 
 - https://github.com/Insper/pygame-snippets.git
