@@ -6,7 +6,7 @@
 import pygame
 import random
 from os import path
-from constantes import ALTURA, GREEN, IMG_DIR, BLACK, FPS, JUMPING, FALLING, LARGURA, FNT_DIR
+from constantes import Dados, Cor, IMG_DIR,Estado, FNT_DIR
 from assets import texto_inicial
 
 def init_screen(screen):
@@ -14,7 +14,7 @@ def init_screen(screen):
     clock = pygame.time.Clock()
     # Carrega o fundo da tela inicial
     background = pygame.image.load(path.join(IMG_DIR, 'ceu.png')).convert()
-    background=pygame.transform.scale(background, (LARGURA, ALTURA-130))
+    background=pygame.transform.scale(background, (Dados.LARGURA, Dados.ALTURA-130))
     arvore=pygame.image.load(path.join(IMG_DIR, 'tree.png')).convert()
     font = pygame.font.Font(path.join(FNT_DIR,'score.ttf'),28)#('Algerian', 48)
     font2 = pygame.font.Font(path.join(FNT_DIR,'score.ttf'),18)
@@ -36,32 +36,32 @@ def init_screen(screen):
     while running:
 
         # Ajusta a velocidade do jogo.
-        clock.tick(FPS)
+        clock.tick(Dados.FPS)
 
         # Processa os eventos (mouse, teclado, botão, etc).
         for event in pygame.event.get():
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state = JUMPING
+                state = Estado.JUMPING
                 running = False
 
             if event.type == pygame.KEYUP:
-                state = FALLING
+                state = Estado.FALLING
                 running = False
 
         # A cada loop, redesenha o fundo e os sprites
-        screen.fill(GREEN)
+        screen.fill(Cor.GREEN)
         screen.blit(background, background_rect)
-        screen.blit(arvore, (10, ALTURA-305))
-        screen.blit(poco_inicio, (320, ALTURA-100))
+        screen.blit(arvore, (10, Dados.ALTURA-305))
+        screen.blit(poco_inicio, (320, Dados.ALTURA-100))
         screen.blit(texto_inicial,(20,20))
-        screen.blit(personagem, (200, ALTURA-110))
-        screen.blit(direita, (150, ALTURA-500))
-        screen.blit(texto_direita,(300,ALTURA-500))
-        screen.blit(esquerda, (150, ALTURA-450))
-        screen.blit(texto_esquerda,(300,ALTURA-450))
-        screen.blit(espaço, (50, ALTURA-400))
-        screen.blit(texto_espaço,(300,ALTURA-400))
+        screen.blit(personagem, (200, Dados.ALTURA-110))
+        screen.blit(direita, (150, Dados.ALTURA-500))
+        screen.blit(texto_direita,(300,Dados.ALTURA-500))
+        screen.blit(esquerda, (150, Dados.ALTURA-450))
+        screen.blit(texto_esquerda,(300,Dados.ALTURA-450))
+        screen.blit(espaço, (50, Dados.ALTURA-400))
+        screen.blit(texto_espaço,(300,Dados.ALTURA-400))
 
 
         # Depois de desenhar tudo, inverte o display.
