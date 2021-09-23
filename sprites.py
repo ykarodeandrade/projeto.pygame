@@ -1,6 +1,6 @@
 import pygame
 import random
-from constantes import LARGURA, ALTURA, BLOCO_LARGURA, BLOCO_ALTURA, DOG_LARGURA, DOG_ALTURA,GRAVITY,STILL,WALKING_RIGTH,WALKING_LEFT,JUMPING,JUMP_SIZE,FALLING
+from constantes import Dados, Estado
 from assets import *
 
 pygame.init()
@@ -14,16 +14,16 @@ class Ship(pygame.sprite.Sprite):
         # Define sequências de sprites de cada animação    
         spritesheet = load_spritesheet(img, 4, 4)
         self.animations = {
-            STILL: spritesheet[0:4],                #constante
-            WALKING_RIGTH: spritesheet[4:8],        #andando      
-            WALKING_LEFT:  spritesheet[8:12],
-            JUMPING: spritesheet[0:1],              #pulando
-            FALLING: spritesheet[0:1],
+            Estado.STILL: spritesheet[0:4],                #constante
+            Estado.WALKING_RIGTH: spritesheet[4:8],        #andando      
+            Estado.WALKING_LEFT:  spritesheet[8:12],
+            Estado.JUMPING: spritesheet[0:1],              #pulando
+            Estado.FALLING: spritesheet[0:1],
         }
         # Define estado atual
         # Usamos o estado para decidir se o jogador pode ou não pular
-        self.animacao=STILL
-        self.state = STILL
+        self.animacao=Estado.STILL
+        self.state = Estado.STILL
         # Define animação atual
         self.animation = self.animations[self.animacao]
         # Inicializa o primeiro quadro da animação
@@ -31,8 +31,8 @@ class Ship(pygame.sprite.Sprite):
         self.image = self.animation[self.frame]
         #self.image = img
         self.rect = self.image.get_rect()
-        self.rect.centerx = LARGURA / 2
-        self.rect.bottom = ALTURA-(100+BLOCO_ALTURA)
+        self.rect.centerx = Dados.LARGURA / 2
+        self.rect.bottom = Dados.ALTURA-(100+Dados.BLOCO_ALTURA)
         self.speedx = 0
         self.speedy = 0
         self.platforms = blocos
@@ -80,15 +80,15 @@ class Ship(pygame.sprite.Sprite):
         # Primeiro tentamos andar no eixo y e depois no x.
         # Tenta andar em y
         # Atualiza a velocidade aplicando a aceleração da gravidade
-        self.speedy += GRAVITY
+        self.speedy += Dados.GRAVITY
         # Atualiza o estado para caindo
         if self.speedy > 0:
-            self.state = FALLING
+            self.state = Estado.FALLING
         # Atualiza a posição y
         self.rect.y += self.speedy
 
         # Atualiza altura no mapa
-        if self.state != FALLING:
+        if self.state != Estado.FALLING:
             self.highest_y = self.rect.bottom
 
         # Se colidiu com algum bloco, volta para o ponto antes da colisão
@@ -117,7 +117,7 @@ class Ship(pygame.sprite.Sprite):
                     # Para de cair
                     self.speedy = 0
                     # Atualiza o estado para parado
-                    self.state = STILL
+                    self.state = Estado.STILL
                     
         
         
@@ -127,18 +127,41 @@ class Ship(pygame.sprite.Sprite):
         # Corrige a posição caso tenha passado do tamanho da janela
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.right >= LARGURA:
-            self.rect.right = LARGURA 
+        if self.rect.right >= Dados.LARGURA:
+            self.rect.right = Dados.LARGURA 
         # Se colidiu com algum bloco, volta para o ponto antes da colisão
         # O personagem não colide com as plataformas quando está andando na horizontal
         
     # Método que faz o personagem pular (extraído de: https://github.com/Insper/pygame-snippets/blob/master/jump.py)
     def jump(self):
         # Só pode pular se ainda não estiver pulando ou caindo
-        if self.state == STILL:
-            self.speedy -= JUMP_SIZE
-            self.state = JUMPING 
+        if self.state == Estado.STILL:
+            self.speedy -= Estado.JUMP_SIZE
+            self.state = Estado.JUMPING 
         self.som_pulo.play()
+
+    def move(self,event):
+
+        if event == pygame.K_SPACE: 
+            self.state = Estado.STILL
+            self.jump()
+
+        if event == pygame.K_LEFT:
+            self.animacao = Estado.WALKING_LEFT
+            self.speedx -= 8
+
+        if event == pygame.K_RIGHT:
+            self.animacao = Estado.WALKING_RIGTH
+            self.speedx += 8
+
+    def stop(self,event):
+        if event == pygame.K_LEFT:
+            self.speedx += 8
+            self.state = Estado.STILL
+
+        if event == pygame.K_RIGHT:
+            self.speedx -= 8 
+            self.state = Estado.STILL
 
 class Bloco(pygame.sprite.Sprite):
     def __init__(self, img, x, y,id):
@@ -163,5 +186,5 @@ class Bloco(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         # Se o Blocoo passar do final da tela, volta para cima e sorteia
         # novas posições e velocidades
-        if self.rect.bottom > ALTURA:
+        if self.rect.bottom > Dados.ALTURA:
             self.rect.y =  -2
