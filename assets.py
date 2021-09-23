@@ -1,7 +1,6 @@
 import pygame
 import os
-#from constantes import IMG_DIR,FNT_DIR,SND_DIR,LARGURA,ALTURA,BLOCO_ALTURA,BLOCO_LARGURA,DOG_ALTURA,DOG_LARGURA
-from constantes import IMG_DIR,FNT_DIR,SND_DIR,Dados
+from constantes import IMG_DIR,FNT_DIR,SND_DIR, Dados
 
 pygame.init()
 

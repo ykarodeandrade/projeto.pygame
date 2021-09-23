@@ -42,27 +42,14 @@ def game_screen(window):
             # ----- Verifica consequências
             if event.type == pygame.QUIT:
                 game = False
+
+            # Verifica se alguma tecla foi pressionada
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: 
-                    player.state = Estado.STILL
-                    player.jump()
-                            
-                # Dependendo da tecla, altera a velocidade.
-                if event.key == pygame.K_LEFT:
-                    player.animacao = Estado.WALKING_LEFT
-                    player.speedx -= 8
-                if event.key == pygame.K_RIGHT:
-                    player.animacao = Estado.WALKING_RIGTH
-                    player.speedx += 8
-            # Verifica se soltou alguma tecla.
+                player.move(event.key)
+      
+            # Verifica se alguma tecla foi liberada
             if event.type == pygame.KEYUP:
-                # Dependendo da tecla, altera a velocidade.
-                if event.key == pygame.K_LEFT:
-                    player.speedx += 8
-                    player.state = Estado.STILL
-                if event.key == pygame.K_RIGHT:
-                    player.speedx -= 8 
-                    player.state = Estado.STILL
+                player.stop(event.key)
        
             if player.score%500==0 and aumenta_vel==True and player.state==Estado.STILL:
                 for i in lista_blocos:
