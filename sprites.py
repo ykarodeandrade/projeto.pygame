@@ -140,6 +140,29 @@ class Ship(pygame.sprite.Sprite):
             self.state = Estado.JUMPING 
         self.som_pulo.play()
 
+    def move(self,event):
+
+        if event == pygame.K_SPACE: 
+            self.state = Estado.STILL
+            self.jump()
+
+        if event == pygame.K_LEFT:
+            self.animacao = Estado.WALKING_LEFT
+            self.speedx -= 8
+
+        if event == pygame.K_RIGHT:
+            self.animacao = Estado.WALKING_RIGTH
+            self.speedx += 8
+
+    def stop(self,event):
+        if event == pygame.K_LEFT:
+            self.speedx += 8
+            self.state = Estado.STILL
+
+        if event == pygame.K_RIGHT:
+            self.speedx -= 8 
+            self.state = Estado.STILL
+
 class Bloco(pygame.sprite.Sprite):
     def __init__(self, img, x, y,id):
         # Construtor da classe mãe (Sprite).
