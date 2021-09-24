@@ -1,6 +1,6 @@
 import pygame
 import os
-from constantes import IMG_DIR,FNT_DIR,SND_DIR,LARGURA,ALTURA,BLOCO_ALTURA,BLOCO_LARGURA,DOG_ALTURA,DOG_LARGURA
+from constantes import IMG_DIR,FNT_DIR,SND_DIR, Dados
 
 pygame.init()
 
@@ -8,14 +8,14 @@ font = pygame.font.Font(os.path.join(FNT_DIR,'score.ttf'),48)
 texto_inicial = font.render('ESCAPING THE WELL', True, (255, 0, 0))
 texto_final = font.render('GAME OVER', True, (255, 0, 0))
 background = pygame.image.load(os.path.join(IMG_DIR,'poço.png'))
-background= pygame.transform.scale(background, (LARGURA, ALTURA))
+background= pygame.transform.scale(background, (Dados.LARGURA, Dados.ALTURA))
 
 agua=pygame.image.load(os.path.join(IMG_DIR,'water.png'))
-agua=pygame.transform.scale(agua, (LARGURA, ALTURA-500))
+agua=pygame.transform.scale(agua, (Dados.LARGURA, Dados.ALTURA-500))
 bloco_img = pygame.image.load(os.path.join(IMG_DIR,'blocks.png'))
-bloco_img = pygame.transform.scale(bloco_img, (BLOCO_LARGURA, BLOCO_ALTURA))
+bloco_img = pygame.transform.scale(bloco_img, (Dados.BLOCO_LARGURA, Dados.BLOCO_ALTURA))
 dog_img = pygame.image.load(os.path.join(IMG_DIR,'personagem.png'))
-dog_img = pygame.transform.scale(dog_img, (DOG_LARGURA, DOG_ALTURA))
+dog_img = pygame.transform.scale(dog_img, (Dados.DOG_LARGURA, Dados.DOG_ALTURA))
 score_font=pygame.font.Font(os.path.join(FNT_DIR,'score.ttf'),28)
 # Carrega os sons do jogo
 
